@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrainWithShubhamCommunity - DevOps Learning</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {# Link to external CSS #}
+</head>
+<body class="antialiased">
+    <!-- Navbar -->
+    <nav class="bg-blue-800 p-4 shadow-lg">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="text-2xl font-bold text-white mb-4 md:mb-0">
+                <span class="terminal-prompt"></span>Question-Bank
+            </div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/interview-questions" class="nav-link">Interview Questions</a>
+                <a href="/jobs" class="nav-link">Jobs</a> {# Added new Jobs link #}
+                <a href="https://discord.gg/kGEr9mR5gT" target="_blank" class="nav-link">Join Us</a>
+                {% if logged_in %}
+                    <a href="/logout" class="nav-link bg-red-600 hover:bg-red-700 text-white">Logout</a>
+                {% else %}
+                    <a href="/login" class="nav-link bg-blue-700 hover:bg-blue-800 text-white">Login</a> {# Removed GitHub and Google icons #}
+                {% endif %}
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="nav-link">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <!-- Hero Section -->
+    <section class="hero-section text-center bg-blue-900 overflow-hidden">
+        {# Full width image #}
+        <img src="https://raw.githubusercontent.com/SHUBHAM-TAYDE/Portfolio-shubham/main/portfolio/assets/images/twscommunity.png" alt="TrainWithShubhamCommunity" class="w-full h-auto object-cover" />
+        
+        {# Content below the image, still within a terminal-styled box #}
+        <div class="container mx-auto p-8 terminal-window mt-8">
+            <div class="terminal-header">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <span>bash -- TrainWithShubhamCommunity</span>
+                <div></div>
+            </div>
+            <h1 class="text-5xl font-bold mb-4">
+                <span class="terminal-prompt"></span>Empowering DevOps Enthusiasts
+            </h1>
+            <p class="text-xl mb-8">
+                Join our open-source, India-based community for free DevOps learning, mentorship, and real-world scenarios.
+            </p>
+            <a href="https://discord.gg/kGEr9mR5gT" target="_blank" class="btn-terminal">
+                <i class="fas fa-terminal"></i> Join Now!
+            </a>
+        </div>
+    </section>
+
+    <!-- Community Join Section (Moved to be the first content section) -->
+    <section class="community-join-section py-16 terminal-window">
+        <div class="terminal-header">
+            <div class="dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <span>join_community.sh</span>
+            <div></div>
+        </div>
+        <h2 class="text-4xl font-bold mb-6 text-center">Join Our <span class="text-blue-600">DevOps Family</span></h2>
+        <p class="text-lg text-center mb-8 terminal-prompt">
+            Connect with us on our official platforms and become a part of our growing community.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6">
+            <a href="https://www.linkedin.com/company/trainwithshubham/posts/?feedView=all" target="_blank" class="btn-terminal">
+                <i class="fab fa-linkedin"></i> Join on LinkedIn
+            </a>
+            <a href="https://discord.gg/kGEr9mR5gT" target="_blank" class="btn-terminal">
+                <i class="fab fa-discord"></i> Join on Discord
+            </a>
+        </div>
+    </section>
+
+    <main class="container mx-auto p-8">
+
+        <!-- About Section -->
+        <section class="about-section py-16 terminal-window">
+            <div class="terminal-header">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <span>cat about_us.txt</span>
+                <div></div>
+            </div>
+            <h2 class="text-4xl font-bold mb-6 text-center text-blue-600">About <span class="text-blue-600">TrainWithShubhamCommunity</span></h2>
+            <div class="text-lg leading-relaxed">
+                <p class="mb-4 terminal-prompt">
+                    Welcome to TrainWithShubhamCommunity, a vibrant, volunteer-driven, open-source initiative based in India. Our mission is to democratize DevOps education, making high-quality learning accessible to everyone, completely free of charge. We believe in the power of collaborative learning and practical experience.
+                </p>
+                <p class="mb-4 terminal-prompt">
+                    Our community is built by passionate volunteers and dedicated community managers who bring their real-world expertise to the table. We offer comprehensive guidance, hands-on workshops, and scenario-based problem-solving sessions designed to equip you with the skills needed to excel in the DevOps landscape.
+                </p>
+                <p class="terminal-prompt">
+                    Whether you're a beginner looking to understand the fundamentals or an experienced professional aiming to sharpen your skills, TrainWithShubhamCommunity is your go-to platform. Join us to learn, grow, and contribute to a thriving ecosystem of DevOps enthusiasts!
+                </p>
+            </div>
+        </section>
+
+        <!-- Interview Questions Demo Section -->
+        <section class="interview-demo-section py-16 terminal-window">
+            <div class="terminal-header">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <span>ls -l interview_questions/</span>
+                <div></div>
+            </div>
+            <h2 class="text-4xl font-bold mb-6 text-center">Latest <span class="text-blue-600">Interview Questions</span></h2>
+            <p class="text-lg text-center mb-8 terminal-prompt">
+                Explore a glimpse of the scenario-based and theoretical questions we cover.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for question in questions[:3] %}
+                <div class="bg-blue-100 p-6 rounded-lg border border-blue-200 shadow-md">
+                    <h3 class="text-xl font-semibold mb-3 text-blue-700 terminal-prompt">
+                        {{ loop.index }}. {{ question.Question }}
+                    </h3>
+                    <div class="answer-container hidden mt-4 bg-blue-50 p-4 rounded-md border border-blue-200">
+                        <p class="terminal-prompt">
+                            <span class="typed-text">{{ question.Answer }}</span>
+                        </p>
+                    </div>
+                    <button class="btn-terminal mt-4 show-answer-btn" data-answer="{{ question.Answer | e }}">
+                        <i class="fas fa-eye"></i> Show Answer
+                    </button>
+                    <button class="btn-terminal mt-4 hide-answer-btn hidden">
+                        <i class="fas fa-eye-slash"></i> Hide Answer
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-12">
+                <a href="/interview-questions" class="btn-terminal">
+                    <i class="fas fa-search"></i> View All Questions
+                </a>
+            </div>
+        </section>
+
+        <!-- New Section: More Actions -->
+        <section class="py-16 terminal-window">
+            <div class="terminal-header">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <span>more_actions.sh</span>
+                <div></div>
+            </div>
+            <h2 class="text-4xl font-bold mb-6 text-center">More <span class="text-blue-600">Actions</span></h2>
+            <p class="text-lg text-center mb-8 terminal-prompt">
+                Discover more ways to engage with our community and resources.
+            </p>
+            <div class="flex flex-wrap justify-center gap-6">
+                <a href="/add-question" class="btn-terminal">
+                    <i class="fas fa-plus-circle"></i> Add a Question
+                </a>
+                <a href="/jobs" class="btn-terminal">
+                    <i class="fas fa-briefcase"></i> Explore Jobs
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-800 p-8 text-center text-white text-sm border-t border-blue-900">
+        <p class="terminal-prompt">&copy; 2025 TrainWithShubhamCommunity. All rights reserved.</p>
+        <p class="terminal-prompt">Built with <i class="fas fa-heart text-red-500"></i> by volunteers.</p>
+    </footer>
+
+    <script>
+        // This script runs after all necessary HTML elements are loaded.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme Toggle Logic
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+
+            // Function to set the theme
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+
+            // Check for saved theme preference on load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // Default to dark mode if OS preference is dark
+                setTheme('dark');
+            } else {
+                // Default to light mode
+                setTheme('light');
+            }
+
+            // Toggle theme on button click
+            themeToggleBtn.addEventListener('click', () => {
+                if (document.body.classList.contains('dark-mode')) {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+
+            // Typing effect for answers
+            const showAnswerButtons = document.querySelectorAll('.show-answer-btn');
+
+            showAnswerButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const parentDiv = event.target.closest('.bg-blue-100');
+                    const answerContainer = parentDiv.querySelector('.answer-container');
+                    const hideButton = parentDiv.querySelector('.hide-answer-btn');
+                    const answerText = button.dataset.answer;
+
+                    // Simulate typing effect
+                    const typedTextSpan = answerContainer.querySelector('.typed-text');
+                    typedTextSpan.textContent = '';
+                    typedTextSpan.style.width = '0';
+
+                    answerContainer.classList.remove('hidden');
+                    button.classList.add('hidden');
+                    hideButton.classList.remove('hidden');
+
+                    // Trigger reflow to restart animation
+                    void typedTextSpan.offsetWidth;
+                    typedTextSpan.style.animation = 'none';
+                    void typedTextSpan.offsetWidth;
+                    typedTextSpan.style.animation = `typing ${answerText.length * 0.05}s steps(${answerText.length}, end) forwards`;
+                    typedTextSpan.textContent = answerText;
+
+                    // Add blinking caret animation
+                    answerContainer.classList.add('typing-container');
+                });
+            });
+
+            const hideAnswerButtons = document.querySelectorAll('.hide-answer-btn');
+            hideAnswerButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const parentDiv = event.target.closest('.bg-blue-100');
+                    const answerContainer = parentDiv.querySelector('.answer-container');
+                    const showButton = parentDiv.querySelector('.show-answer-btn');
+
+                    answerContainer.classList.add('hidden');
+                    showButton.classList.remove('hidden');
+                    button.classList.add('hidden');
+
+                    // Remove blinking caret animation
+                    answerContainer.classList.remove('typing-container');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

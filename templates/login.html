@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register - Question-Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Firebase SDK (Client-side) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-blue-800 p-4 shadow-lg">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="text-2xl font-bold text-white mb-4 md:mb-0">
+                <span class="terminal-prompt"></span>Question-Bank
+            </div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/interview-questions" class="nav-link">Interview Questions</a>
+                <a href="/jobs" class="nav-link">Jobs</a>
+                <a href="https://discord.gg/kGEr9mR5gT" target="_blank" class="nav-link">Join Us</a>
+                {% if logged_in %}
+                    <a href="/logout" class="nav-link bg-red-600 hover:bg-red-700 text-white">Logout</a>
+                {% else %}
+                    <a href="/login" class="nav-link bg-blue-700 hover:bg-blue-800 text-white">Login</a>
+                {% endif %}
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="nav-link" title="Toggle Theme">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-8 flex-grow flex items-center justify-center">
+        <section class="py-16 terminal-window max-w-md w-full">
+            <div class="terminal-header">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <span id="form-title-header">login.sh</span>
+                <div></div>
+            </div>
+            <h2 class="text-4xl font-bold mb-6 text-center text-blue-600" id="form-title">Login</h2>
+            <p class="text-lg text-center mb-8 terminal-prompt" id="form-subtitle">
+                Access your account or create a new one.
+            </p>
+
+            {# Flash Messages #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6">
+                        {% for category, message in messages %}
+                            <div class="p-3 rounded-md mb-2 text-sm {% if category == 'error' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form id="authForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-blue-600 text-lg mb-2 terminal-prompt">Email:</label>
+                    <input type="email" id="email" name="email" class="w-full" required autocomplete="email">
+                </div>
+                <div>
+                    <label for="password" class="block text-blue-600 text-lg mb-2 terminal-prompt">Password:</label>
+                    <input type="password" id="password" name="password" class="w-full" required autocomplete="current-password">
+                </div>
+                <div class="text-center mt-8">
+                    <button type="submit" id="submitButton" class="btn-terminal">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="button" id="toggleAuthMode" class="text-blue-600 hover:underline terminal-prompt">
+                        Don't have an account? Register
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-800 p-8 text-center text-white text-sm border-t border-blue-900">
+        <p class="terminal-prompt">&copy; 2025 TrainWithShubhamCommunity. All rights reserved.</p>
+        <p class="terminal-prompt">Built with <i class="fas fa-heart text-red-500"></i> by volunteers.</p>
+    </footer>
+
+    <script>
+        // --- Firebase Configuration ---
+        // IMPORTANT: Replace with your actual Firebase project configuration.
+        // You can find this in your Firebase project settings -> Project settings -> General -> Your apps -> Firebase SDK snippet (Config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCZVScscXjXb4IB60GbkR6ZqskDVhGXL14",
+            authDomain: "tws-question-bank-82a10.firebaseapp.com",
+            projectId: "tws-question-bank-82a10",
+            storageBucket: "tws-question-bank-82a10.firebasestorage.app",
+            messagingSenderId: "550553649743",
+            appId: "1:550553649743:web:60fd9c3174d99e5703203a",
+            measurementId: "G-B7248GND11"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme Toggle Logic
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                if (document.body.classList.contains('dark-mode')) {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+
+            // --- Firebase Auth Logic ---
+            const authForm = document.getElementById('authForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const submitButton = document.getElementById('submitButton');
+            const toggleAuthModeButton = document.getElementById('toggleAuthMode');
+            const formTitle = document.getElementById('form-title');
+            const formTitleHeader = document.getElementById('form-title-header');
+            const formSubtitle = document.getElementById('form-subtitle');
+
+            let isLoginMode = true; // State to track if we are in login or register mode
+
+            // Function to display messages (replaces Flask's flash messages for client-side errors/success)
+            function displayMessage(message, type) {
+                const messageContainer = document.querySelector('.mb-6');
+                if (!messageContainer) return; // If container doesn't exist, do nothing
+
+                const existingMessages = messageContainer.querySelectorAll('div');
+                existingMessages.forEach(msg => msg.remove()); // Clear previous messages
+
+                const div = document.createElement('div');
+                div.textContent = message;
+                div.classList.add('p-3', 'rounded-md', 'mb-2', 'text-sm');
+
+                if (type === 'error') {
+                    div.classList.add('bg-red-100', 'text-red-700');
+                } else if (type === 'success') {
+                    div.classList.add('bg-green-100', 'text-green-700');
+                } else {
+                    div.classList.add('bg-blue-100', 'text-blue-700');
+                }
+                messageContainer.appendChild(div);
+
+                // Auto-hide message after 5 seconds
+                setTimeout(() => {
+                    div.remove();
+                }, 5000);
+            }
+
+
+            toggleAuthModeButton.addEventListener('click', () => {
+                isLoginMode = !isLoginMode;
+                if (isLoginMode) {
+                    formTitle.textContent = 'Login';
+                    formTitleHeader.textContent = 'login.sh';
+                    formSubtitle.textContent = 'Access your account.';
+                    submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                    toggleAuthModeButton.textContent = "Don't have an account? Register";
+                } else {
+                    formTitle.textContent = 'Register';
+                    formTitleHeader.textContent = 'register.sh';
+                    formSubtitle.textContent = 'Create a new account.';
+                    submitButton.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+                    toggleAuthModeButton.textContent = "Already have an account? Login";
+                }
+            });
+
+            authForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = emailInput.value;
+                const password = passwordInput.value;
+
+                if (isLoginMode) {
+                    // Login
+                    try {
+                        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                        const user = userCredential.user;
+                        const idToken = await user.getIdToken();
+
+                        // Send ID token to Flask backend for session management
+                        const response = await fetch('/set-id-token', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ idToken: idToken }),
+                        });
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            displayMessage('Login successful! Redirecting...', 'success');
+                            window.location.href = data.redirect; // Redirect to index or dashboard
+                        } else {
+                            displayMessage(data.message || 'Failed to set session.', 'error');
+                        }
+                    } catch (error) {
+                        console.error("Login error:", error);
+                        let errorMessage = error.message;
+                        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                            errorMessage = 'Invalid email or password.';
+                        } else if (error.code === 'auth/invalid-email') {
+                            errorMessage = 'Invalid email format.';
+                        }
+                        displayMessage(errorMessage, 'error');
+                    }
+                } else {
+                    // Register
+                    try {
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                        displayMessage('Registration successful! Please log in.', 'success');
+                        // Switch to login mode after successful registration
+                        isLoginMode = true;
+                        formTitle.textContent = 'Login';
+                        formTitleHeader.textContent = 'login.sh';
+                        formSubtitle.textContent = 'Access your account.';
+                        submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                        toggleAuthModeButton.textContent = "Don't have an account? Register";
+                        emailInput.value = ''; // Clear fields
+                        passwordInput.value = '';
+                    } catch (error) {
+                        console.error("Registration error:", error);
+                        let errorMessage = error.message;
+                        if (error.code === 'auth/email-already-in-use') {
+                            errorMessage = 'This email is already in use.';
+                        } else if (error.code === 'auth/invalid-email') {
+                            errorMessage = 'Invalid email format.';
+                        } else if (error.code === 'auth/weak-password') {
+                            errorMessage = 'Password should be at least 6 characters.';
+                        }
+                        displayMessage(errorMessage, 'error');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
